@@ -237,7 +237,7 @@ jobs:
           CONFIG_NETFILTER_XT_TARGET_CHECKSUM=y
           CONFIG_CFS_BANDWIDTH=y
           " >> arch/arm64/configs/enchilada_defconfig
-          sudo cp -r ../Tools/file security/selinux/hooks.c
+  #sudo cp -r ../Tools/file security/selinux/hooks.c
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s ${{env.KERNELSU_TAG}}
           make O="$output_dir" enchilada_defconfig
           make -j $(nproc) O="$output_dir" CC=clang
