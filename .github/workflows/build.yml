@@ -89,7 +89,6 @@ jobs:
 #         patch -p0 < lxc.patch
 #玩原神玩的
 
-#先改到这里吧 头晕目眩了
       - name: Compiling Kernel
         run: |
           CLANG=~/toolchains/clang/bin
