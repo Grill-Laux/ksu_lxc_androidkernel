@@ -266,9 +266,9 @@ jobs:
           body: |
             Device:
             enchilada
-
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
             out/arch/arm64/boot/Image*
             AnyKernel3-master/boot.zip
+            anykernel/*
