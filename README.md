@@ -10,3 +10,8 @@
 如果你有需要编译其它设备，请在fork后修改build.yml，一定要全改成你的，否则某些配置对你不适用
 # 需要修改的东西
 eg.clang gcc kernelsource…
+# 参考→
+https://github.com/bin456789/KernelSU-Action
+https://github.com/SummerComings/KernelSU-actions
+https://github.com/Hongshi607/
+以及Google官方的教程
