@@ -246,12 +246,13 @@ jobs:
 
       - name: Resource organization
         run: |
-          sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-          cd Anykernel3/
-          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
-          sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' anykernel/anykernel.sh
-          sed -i 's/is_slot_device=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
-          cp android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
+          curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
+          unzip AnyKernel3.zip
+          cd AnyKernel3-master
+          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3-master/anykernel.sh
+          sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' AnyKernel3-master/anykernel.sh
+          sed -i 's/is_slot_device=0;/is_slot_device=auto;/g' AnyKernel3-master/anykernel.sh
+          sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3-master/
 #这里改下哦 把所有需要修改的路径和image格式都改下
 #nya~
 
@@ -274,4 +275,5 @@ jobs:
             out/arch/arm64/boot/Image*
             AnyKernel3-master/boot.zip
             $GITHUB_WORKSPACE/AnyKernel3-master/AnyKernel3_enchilada-lineageos-${{ env.BUILD_TIME }}
-            AnyKernel3/boot.zip
+            A
+            anykernel/boot.zip
