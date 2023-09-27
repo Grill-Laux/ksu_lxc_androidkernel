@@ -246,7 +246,7 @@ jobs:
 
       - name: Resource organization
         run: |
-          sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb Anykernel3/
+          sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
           cd Anykernel3/
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
           sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' anykernel/anykernel.sh
