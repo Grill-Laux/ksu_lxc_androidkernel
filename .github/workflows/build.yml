@@ -247,12 +247,11 @@ jobs:
       - name: Resource organization
         run: |
           sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb anykernel/
-          cd anykernel/
+          cd Anykernel3/
           sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
-          sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' AnyKernel3/anykernel.sh
+          sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' anykernel/anykernel.sh
           sed -i 's/is_slot_device=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
           cp android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3/
-          rm -rf AnyKernel3/.git* AnyKernel3/README.md
 #这里改下哦 把所有需要修改的路径和image格式都改下
 #nya~
 
