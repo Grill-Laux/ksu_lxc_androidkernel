@@ -262,11 +262,13 @@ jobs:
           flash_boot
           EOF
 
+          rm -rf README.md
+          rm -rf LICENSE
           cp $GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot/Image.gz-dtb .
           zip -r boot.zip * -x .git README.md *placeholder
-
+          rm -rf anykernel.sh
 #这里改下哦 把所有需要修改的路径和image格式都改下
-#nya~
+#为了确保上传时没有奇怪的东西混进去，这里把不需要的东西删了一下，但是本项目仍按照LICENSE的规定使用，当然，也请您自行遵守。
 
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v3
@@ -284,7 +286,4 @@ jobs:
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
-            out/arch/arm64/boot/Image*
-            AnyKernel3-master/boot.zip
-            AnyKernel3-master/AnyKernel3_enchilada-lineageos-${{ env.BUILD_TIME }}
             anykernel/*
