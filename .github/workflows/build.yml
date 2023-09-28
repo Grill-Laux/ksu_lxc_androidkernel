@@ -249,6 +249,7 @@ jobs:
           curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
           unzip AnyKernel3.zip
           cd AnyKernel3-master
+          rm -rf 
 
           cat > anykernel.sh <<EOF
           properties() { '
@@ -264,7 +265,10 @@ jobs:
           EOF
 
           cp $GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot/Image.gz-dtb .
+          rm -rf README.md
+          rm -rf LICENSE
           zip -r boot.zip * -x .git README.md *placeholder
+          rm -rf anykernel.sh
 
 #这里改下哦 把所有需要修改的路径和image格式都改下
 #nya~
@@ -285,7 +289,4 @@ jobs:
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
-            out/arch/arm64/boot/Image*
-            AnyKernel3-master/boot.zip
-            AnyKernel3-master/AnyKernel3_enchilada-lineageos-${{ env.BUILD_TIME }}
             anykernel/*
