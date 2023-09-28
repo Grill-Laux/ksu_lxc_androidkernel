@@ -245,7 +245,7 @@ jobs:
 
       - name: Resource organization
         run: |
-        curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
+          curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
           unzip AnyKernel3.zip
           cd AnyKernel3-master
 
