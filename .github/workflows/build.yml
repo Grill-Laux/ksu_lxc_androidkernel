@@ -289,4 +289,5 @@ jobs:
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
-            anykernel/*
+            anykernel/boot.zip
+            $GITHUB_WORKSPACE/AnyKernel3-master/boot.zip
