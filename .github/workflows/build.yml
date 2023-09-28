@@ -245,14 +245,26 @@ jobs:
 
       - name: Resource organization
         run: |
-          curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
+        curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
           unzip AnyKernel3.zip
           cd AnyKernel3-master
-          sed -i 's/do.devicecheck=1/do.devicecheck=0/g' anykernel.sh
-          sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' anykernel.sh
-          sed -i 's/is_slot_device=0;/is_slot_device=auto;/g' anykernel.sh
-          cd ..
-          sudo mv android-kernel/out/arch/arm64/boot/Image.gz-dtb AnyKernel3-master/
+
+          cat > anykernel.sh <<EOF
+          properties() { '
+          do.devicecheck=1
+          do.cleanup=1
+          device.name1=${{ env.device }}
+          '; }
+          block=auto
+          is_slot_device=0
+          . tools/ak3-core.sh
+          split_boot
+          flash_boot
+          EOF
+
+          cp ../out/arch/arm64/boot/Image.gz-dtb .
+          zip -r boot.zip * -x .git README.md *placeholder
+
 #这里改下哦 把所有需要修改的路径和image格式都改下
 #nya~
 
