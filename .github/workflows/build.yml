@@ -252,12 +252,12 @@ jobs:
 
           cat > anykernel.sh <<EOF
           properties() { '
-          do.devicecheck=1
+          do.devicecheck=0
           do.cleanup=1
           device.name1=enchilada
           '; }
           block=auto
-          is_slot_device=0
+          is_slot_device=auto
           . tools/ak3-core.sh
           split_boot
           flash_boot
