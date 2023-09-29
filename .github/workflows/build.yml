@@ -245,6 +245,10 @@ jobs:
 
       - name: Resource organization
         run: |
+          mkdir -p out/arch/arm64/boot/
+          echo 123 > out/arch/arm64/boot/Image
+          echo 123 > out/arch/arm64/boot/Image.gz
+          echo 123 > out/arch/arm64/boot/Image.gz-dtb
           curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
           unzip AnyKernel3.zip
           cd AnyKernel3-master
@@ -262,20 +266,16 @@ jobs:
           flash_boot
           EOF
 
-          rm -rf README.md
-          rm -rf LICENSE
           cp $GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot/Image.gz-dtb .
           zip -r boot.zip * -x .git README.md *placeholder
-          rm -rf anykernel.sh
           ls
 #这里改下哦 把所有需要修改的路径和image格式都改下
-#为了确保上传时没有奇怪的东西混进去，这里把不需要的东西删了一下，但是本项目仍按照LICENSE的规定使用，当然，也请您自行遵守。
 
-      - name: Upload AnyKernel3
-        uses: actions/upload-artifact@v3
-        with:
-          name: AnyKernel3_enchilada-lineageos-${{ env.BUILD_TIME }}
-          path: anykernel/*
+#      - name: Upload AnyKernel3
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: AnyKernel3_enchilada-lineageos-${{ env.BUILD_TIME }}
+#          path: anykernel/*
           
       - name: release
         uses: softprops/action-gh-release@v1
@@ -287,6 +287,5 @@ jobs:
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
-            anykernel/*
-            boot.zip
-            
+            out/arch/arm64/boot/Image*
+            AnyKernel3-master/boot.zip
