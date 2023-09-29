@@ -267,6 +267,7 @@ jobs:
           cp $GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot/Image.gz-dtb .
           zip -r boot.zip * -x .git README.md *placeholder
           rm -rf anykernel.sh
+          ls
 #这里改下哦 把所有需要修改的路径和image格式都改下
 #为了确保上传时没有奇怪的东西混进去，这里把不需要的东西删了一下，但是本项目仍按照LICENSE的规定使用，当然，也请您自行遵守。
 
@@ -286,5 +287,6 @@ jobs:
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
-            anykernel/boot.zip
-            $GITHUB_WORKSPACE/AnyKernel3-master/boot.zip
+            anykernel/*
+            boot.zip
+            
