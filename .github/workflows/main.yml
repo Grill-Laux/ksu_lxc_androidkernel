@@ -20,26 +20,21 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y curl jq
-
       - name: check kernelsu release
         id: check_kernelsu_release
         run: |
           kernelsu_release=`curl https://api.github.com/repos/tiann/KernelSU/releases/latest | jq -r .tag_name`
           local_release=`curl --header 'authorization: Bearer ${{ github.token }}' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name`
-
           echo $kernelsu_release
           echo $local_release
-
           echo kernelsu_release=$kernelsu_release >> $GITHUB_OUTPUT
           echo local_release=$local_release >> $GITHUB_OUTPUT
-
     outputs:
       kernelsu_release: ${{ steps.check_kernelsu_release.outputs.kernelsu_release }}
       local_release: ${{ steps.check_kernelsu_release.outputs.local_release }}
 
   build:
     needs: check_kernelsu_update
-    if: needs.check_kernelsu_update.outputs.kernelsu_release != needs.check_kernelsu_update.outputs.local_release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,8 +42,11 @@ jobs:
       - name: checkout kernel
         uses: actions/checkout@v3
         with:
-          repository: LineageOS/android_kernel_oneplus_sdm845
-          ref: lineage-20
+          repository: snnbyyds/kernel_oneplus_sdm845
+          ref: thirteen
+#repository请填写<owner>/<repository>呦
+#ref填写branch就可以啦
+#别忘了看看下面 有些地方也是要改的哦
 
       - name: Cloning Sources and Toolchain
         run: |
@@ -56,25 +54,24 @@ jobs:
           sudo apt update -y
           sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
           sudo apt clean
-          git clone https://github.com/LineageOS/android_kernel_oneplus_sdm845 --depth=1 -b lineage-20 android-kernel
+          git clone https://github.com/snnbyyds/kernel_oneplus_sdm845 --depth=1 -b thirteen android-kernel
           git clone https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r445002 --depth=1 --single-branch --no-tags -b 12.0 ~/toolchains/clang
           git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-10.0.0_r47 --depth=1 --single-branch --no-tags ~/toolchains/aarch64-linux-android-4.9
           git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b android-10.0.0_r47 --depth=1 --single-branch --no-tags ~/toolchains/arm-linux-androideabi-4.9
-          git clone https://github.com/osm0sis/anykernel
+#这里请修改上自己的clang编译器 如果你的也是r445002就没必要改了哦
       
       - name: Setup CLOSE ANDROID_PARANOID_NETWORK
         run: |
          sed -i '/CONFIG_ANDROID_PARANOID_NETWORK/d' android-kernel/arch/arm64/configs/enchilada_defconfig
          echo "# CONFIG_ANDROID_PARANOID_NETWORK is not set" >> android-kernel/arch/arm64/configs/enchilada_defconfig
-
+#如果不需要的话请自行注释我这个小可爱的上下两段哦
       - name: Setup LXC_DOCKER
         run: |
          cd $GITHUB_WORKSPACE/
          wget https://github.com/wu17481748/lxc-docker/releases/download/lxc-docker-2config/LXC-DOCKER-OPEN-CONFIG.sh
          chmod 777 LXC-DOCKER-OPEN-CONFIG.sh
          ./LXC-DOCKER-OPEN-CONFIG.sh android-kernel/arch/arm64/configs/enchilada_defconfig -w
-
-#如果你会的话就取消注释呦~
+#阁下需要打lxc patch的时候把前面的#去掉即可 别忘了看看内核源码中有没有/net/netfilter/xt_qtaguid.c这个文件 没有的话请不要取消注释
 #      - name: Setup LXC_PATCH
 #        run: |
 #         cd $GITHUB_WORKSPACE/
@@ -92,7 +89,7 @@ jobs:
           PATH=$CLANG:$GCC64:$GCC32:$PATH
           export PATH
           export ARCH=arm64
-          export CLANG_TRIPLE=aarch64-lin
+          export CLANG_TRIPLE=aarch64-linux-gnu
           export CROSS_COMPILE=aarch64-linux-android-
           export CROSS_COMPILE_ARM32=arm-linux-androideabi-
           output_dir=out
@@ -248,7 +245,6 @@ jobs:
           curl -Lo AnyKernel3.zip https://github.com/osm0sis/AnyKernel3/archive/refs/heads/master.zip
           unzip AnyKernel3.zip
           cd AnyKernel3-master
-
           cat > anykernel.sh <<EOF
           properties() { '
           do.devicecheck=0
@@ -261,10 +257,11 @@ jobs:
           split_boot
           flash_boot
           EOF
-
           cp $GITHUB_WORKSPACE/android-kernel/out/arch/arm64/boot/Image.gz-dtb .
           zip -r boot.zip * -x .git README.md *placeholder
-          
+          ls
+#这里改下哦 把所有需要修改的路径和image格式都改下
+
 #      - name: Upload AnyKernel3
 #        uses: actions/upload-artifact@v3
 #        with:
@@ -274,10 +271,12 @@ jobs:
       - name: release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
+          tag_name: Manual_PixelExperience_${{ needs.check_kernelsu_update.outputs.kernelsu_release }}_${{ env.BUILD_TIME }}
           body: |
             Device:
             enchilada
+            Kernel Source:
+            https://github.com/snnbyyds/kernel_oneplus_sdm845
             KernelSU:
             https://github.com/tiann/KernelSU/releases/tag/${{ needs.check_kernelsu_update.outputs.kernelsu_release }}
           files: |
